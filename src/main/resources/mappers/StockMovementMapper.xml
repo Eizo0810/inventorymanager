@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.inventorymanager.mapper.StockMovementMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO stock_movements (
+            product_id,
+            movement_type,
+            quantity,
+            note
+        ) VALUES (
+            #{productId},
+            #{movementType},
+            #{quantity},
+            #{note}
+        )
+    </insert>
+
+    <select id="findByProductId" resultType="com.example.inventorymanager.entity.StockMovement">
+        SELECT
+            id,
+            product_id,
+            movement_type,
+            quantity,
+            note,
+            created_at
+        FROM stock_movements
+        WHERE product_id = #{productId}
+        ORDER BY created_at DESC, id DESC
+    </select>
+
+    <select id="calculateStockQuantity" resultType="int">
+        SELECT COALESCE(SUM(
+            CASE
+                WHEN movement_type = 'IN' THEN quantity
+                WHEN movement_type = 'OUT' THEN -quantity
+                ELSE 0
+            END
+        ), 0)
+        FROM stock_movements
+        WHERE product_id = #{productId}
+    </select>
+</mapper>

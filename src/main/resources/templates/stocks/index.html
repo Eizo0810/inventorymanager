@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>在庫一覧</title>
+<link th:href="@{/css/app.css}" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <div class="page-header">
+        <h1>在庫一覧</h1>
+        <div class="nav">
+            <a th:href="@{/products}" class="btn">商品一覧</a>
+            <a th:href="@{/products/new}" class="btn btn-primary">商品登録</a>
+        </div>
+    </div>
+
+    <form th:action="@{/stocks}" method="get" class="form-row">
+        <div>
+            <label class="form-label">キーワード</label>
+            <input type="text"
+                   name="keyword"
+                   th:value="${keyword}"
+                   class="form-control"
+                   placeholder="商品コード・商品名・カテゴリ">
+        </div>
+        <button type="submit" class="btn btn-primary">検索</button>
+        <a th:href="@{/stocks}" class="btn">クリア</a>
+    </form>
+
+    <table class="table">
+        <tr>
+            <th>商品コード</th>
+            <th>商品名</th>
+            <th>カテゴリ</th>
+            <th>現在庫数</th>
+            <th>安全在庫数</th>
+            <th>状態</th>
+            <th>操作</th>
+        </tr>
+        <tr th:each="summary : ${summaries}">
+            <td th:text="${summary.code}"></td>
+            <td th:text="${summary.name}"></td>
+            <td th:text="${summary.category}"></td>
+            <td th:text="${summary.stockQuantity}"></td>
+            <td th:text="${summary.safetyStock}"></td>
+            <td>
+                <span th:if="${summary.alert}" class="badge badge-alert">要補充</span>
+                <span th:unless="${summary.alert}" class="badge badge-ok">正常</span>
+            </td>
+            <td>
+                <a th:href="@{/products/{id}/movements(id=${summary.productId})}" class="btn">
+                    入出庫
+                </a>
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

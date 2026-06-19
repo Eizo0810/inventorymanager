@@ -1,0 +1,160 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #f6f7f9;
+    color: #20242a;
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.5;
+}
+
+a {
+    color: #0d6efd;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.container {
+    width: min(100% - 48px, 1120px);
+    margin: 32px auto;
+    padding: 28px;
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    box-shadow: 0 8px 22px rgba(20, 26, 35, 0.08);
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.nav {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.form-row {
+    display: flex;
+    gap: 8px;
+    align-items: end;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.form-control {
+    min-height: 38px;
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #cfd4da;
+    border-radius: 6px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    background: #fff;
+    color: #20242a;
+    cursor: pointer;
+}
+
+.btn-primary {
+    color: #fff;
+    background: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.btn-danger {
+    color: #fff;
+    background: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-outline {
+    background: #fff;
+}
+
+.alert {
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    border-radius: 6px;
+}
+
+.alert-success {
+    color: #0f5132;
+    background: #d1e7dd;
+    border: 1px solid #badbcc;
+}
+
+.alert-danger {
+    color: #842029;
+    background: #f8d7da;
+    border: 1px solid #f5c2c7;
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 700;
+}
+
+.badge-alert {
+    color: #842029;
+    background: #f8d7da;
+}
+
+.badge-ok {
+    color: #0f5132;
+    background: #d1e7dd;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th,
+.table td {
+    padding: 10px;
+    border: 1px solid #dee2e6;
+    vertical-align: middle;
+}
+
+.table th {
+    background: #f1f3f5;
+    text-align: left;
+}
+
+.table tr:nth-child(even) {
+    background: #f8f9fa;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}

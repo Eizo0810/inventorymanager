@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.inventorymanager.mapper.ProductMapper">
+
+    <select id="findAll" resultType="com.example.inventorymanager.entity.Product">
+        SELECT
+            id,
+            code,
+            name,
+            category,
+            safety_stock,
+            created_at,
+            updated_at
+        FROM products
+        <where>
+            <if test="keyword != null">
+                code ILIKE CONCAT('%', #{keyword}, '%')
+                OR name ILIKE CONCAT('%', #{keyword}, '%')
+                OR category ILIKE CONCAT('%', #{keyword}, '%')
+            </if>
+        </where>
+        ORDER BY id
+    </select>
+
+    <select id="findById" resultType="com.example.inventorymanager.entity.Product">
+        SELECT
+            id,
+            code,
+            name,
+            category,
+            safety_stock,
+            created_at,
+            updated_at
+        FROM products
+        WHERE id = #{id}
+    </select>
+
+    <select id="findByCode" resultType="com.example.inventorymanager.entity.Product">
+        SELECT
+            id,
+            code,
+            name,
+            category,
+            safety_stock,
+            created_at,
+            updated_at
+        FROM products
+        WHERE code = #{code}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO products (
+            code,
+            name,
+            category,
+            safety_stock
+        ) VALUES (
+            #{code},
+            #{name},
+            #{category},
+            #{safetyStock}
+        )
+    </insert>
+
+    <select id="findStockSummaries" resultType="com.example.inventorymanager.dto.StockSummary">
+        SELECT
+            p.id AS product_id,
+            p.code,
+            p.name,
+            p.category,
+            p.safety_stock,
+            COALESCE(SUM(
+                CASE
+                    WHEN sm.movement_type = 'IN' THEN sm.quantity
+                    WHEN sm.movement_type = 'OUT' THEN -sm.quantity
+                    ELSE 0
+                END
+            ), 0) AS stock_quantity
+        FROM products p
+        LEFT JOIN stock_movements sm
+            ON sm.product_id = p.id
+        <where>
+            <if test="keyword != null">
+                p.code ILIKE CONCAT('%', #{keyword}, '%')
+                OR p.name ILIKE CONCAT('%', #{keyword}, '%')
+                OR p.category ILIKE CONCAT('%', #{keyword}, '%')
+            </if>
+        </where>
+        GROUP BY
+            p.id,
+            p.code,
+            p.name,
+            p.category,
+            p.safety_stock
+        ORDER BY p.id
+    </select>
+</mapper>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>ログイン</title>
+<link th:href="@{/css/app.css}" rel="stylesheet">
+</head>
+<body>
+<div class="container" style="max-width: 420px;">
+    <h1>InventoryManager</h1>
+
+    <div th:if="${param.error}" class="alert alert-danger">
+        ユーザー名またはパスワードが違います。
+    </div>
+
+    <div th:if="${param.logout}" class="alert alert-success">
+        ログアウトしました。
+    </div>
+
+    <form th:action="@{/login}" method="post">
+        <div class="form-group">
+            <label class="form-label">ユーザー名</label>
+            <input type="text" name="username" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">パスワード</label>
+            <input type="password" name="password" class="form-control" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%;">ログイン</button>
+    </form>
+</div>
+</body>
+</html>

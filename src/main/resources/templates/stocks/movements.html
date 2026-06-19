@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>入出庫</title>
+<link th:href="@{/css/app.css}" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <div class="page-header">
+        <h1>入出庫</h1>
+        <div class="nav">
+            <a th:href="@{/stocks}" class="btn">在庫一覧へ戻る</a>
+            <a th:href="@{/products}" class="btn">商品一覧へ戻る</a>
+        </div>
+    </div>
+
+    <p>
+        <strong th:text="${product.code}"></strong>
+        <span th:text="${product.name}"></span>
+    </p>
+
+    <div th:if="${param.registered}" class="alert alert-success">
+        入出庫を登録しました。
+    </div>
+
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <form th:action="@{/products/{id}/movements(id=${product.id})}" method="post" class="form-row">
+        <div>
+            <label class="form-label">種別</label>
+            <select name="movementType" class="form-control">
+                <option th:each="type : ${movementTypes}"
+                        th:value="${type}"
+                        th:text="${type == T(com.example.inventorymanager.entity.MovementType).IN ? '入庫' : '出庫'}"></option>
+            </select>
+        </div>
+        <div>
+            <label class="form-label">数量</label>
+            <input type="number" name="quantity" class="form-control" min="1" required>
+        </div>
+        <div>
+            <label class="form-label">備考</label>
+            <input type="text" name="note" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">登録</button>
+    </form>
+
+    <table class="table">
+        <tr>
+            <th>ID</th>
+            <th>種別</th>
+            <th>数量</th>
+            <th>備考</th>
+            <th>登録日時</th>
+        </tr>
+        <tr th:each="movement : ${movements}">
+            <td th:text="${movement.id}"></td>
+            <td th:text="${movement.movementType == T(com.example.inventorymanager.entity.MovementType).IN ? '入庫' : '出庫'}"></td>
+            <td th:text="${movement.quantity}"></td>
+            <td th:text="${movement.note}"></td>
+            <td th:text="${movement.createdAt}"></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>商品登録</title>
+<link th:href="@{/css/app.css}" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <div class="page-header">
+        <h1>商品登録</h1>
+        <div class="nav">
+            <a th:href="@{/products}" class="btn">商品一覧へ戻る</a>
+        </div>
+    </div>
+
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+    <form th:action="@{/products}" method="post">
+        <div class="form-group">
+            <label class="form-label">商品コード</label>
+            <input type="text"
+                   name="code"
+                   th:value="${product.code}"
+                   class="form-control"
+                   required>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">商品名</label>
+            <input type="text"
+                   name="name"
+                   th:value="${product.name}"
+                   class="form-control"
+                   required>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">カテゴリ</label>
+            <input type="text"
+                   name="category"
+                   th:value="${product.category}"
+                   class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">安全在庫数</label>
+            <input type="number"
+                   name="safetyStock"
+                   th:value="${product.safetyStock}"
+                   min="0"
+                   class="form-control"
+                   required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">登録</button>
+    </form>
+</div>
+</body>
+</html>
