@@ -14,6 +14,8 @@ import com.example.inventorymanager.service.ProductService;
 @Controller
 public class ProductController {
 
+    private static final int PRODUCT_PAGE_SIZE = 3;
+
     private final ProductService productService;
 
     public ProductController(ProductService productService) {
@@ -28,9 +30,13 @@ public class ProductController {
     @GetMapping("/products")
     public String index(
             @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Integer page,
             Model model) {
 
-        model.addAttribute("products", productService.findAll(keyword));
+        var productPage = productService.findPage(keyword, page, PRODUCT_PAGE_SIZE);
+
+        model.addAttribute("products", productPage.getItems());
+        model.addAttribute("productPage", productPage);
         model.addAttribute("keyword", keyword);
 
         return "products/index";

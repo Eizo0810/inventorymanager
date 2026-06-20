@@ -74,6 +74,22 @@
             </td>
         </tr>
     </table>
+
+    <div class="pagination">
+        <a th:if="${!productPage.first}"
+           th:href="@{/products(page=${productPage.previousPage}, keyword=${keyword})}"
+           class="btn">前へ</a>
+        <span>
+            <span th:text="${productPage.page}"></span>
+            /
+            <span th:text="${productPage.totalPages}"></span>
+            ページ
+            <span th:text="'（全' + ${productPage.totalCount} + '件）'"></span>
+        </span>
+        <a th:if="${!productPage.last}"
+           th:href="@{/products(page=${productPage.nextPage}, keyword=${keyword})}"
+           class="btn">次へ</a>
+    </div>
 </div>
 </body>
 </html>

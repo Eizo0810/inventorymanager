@@ -24,6 +24,40 @@
         ORDER BY id
     </select>
 
+    <select id="findPage" resultType="com.example.inventorymanager.entity.Product">
+        SELECT
+            id,
+            code,
+            name,
+            category,
+            safety_stock,
+            created_at,
+            updated_at
+        FROM products
+        <where>
+            <if test="keyword != null">
+                code ILIKE CONCAT('%', #{keyword}, '%')
+                OR name ILIKE CONCAT('%', #{keyword}, '%')
+                OR category ILIKE CONCAT('%', #{keyword}, '%')
+            </if>
+        </where>
+        ORDER BY id
+        LIMIT #{limit}
+        OFFSET #{offset}
+    </select>
+
+    <select id="countAll" resultType="int">
+        SELECT COUNT(*)
+        FROM products
+        <where>
+            <if test="keyword != null">
+                code ILIKE CONCAT('%', #{keyword}, '%')
+                OR name ILIKE CONCAT('%', #{keyword}, '%')
+                OR category ILIKE CONCAT('%', #{keyword}, '%')
+            </if>
+        </where>
+    </select>
+
     <select id="findById" resultType="com.example.inventorymanager.entity.Product">
         SELECT
             id,

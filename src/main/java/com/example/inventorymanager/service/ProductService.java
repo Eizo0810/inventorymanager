@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.inventorymanager.dto.PageResult;
 import com.example.inventorymanager.dto.StockSummary;
 import com.example.inventorymanager.entity.Product;
 import com.example.inventorymanager.mapper.ProductMapper;
@@ -25,6 +26,22 @@ public class ProductService {
 
     public List<Product> findAll(String keyword) {
         return productMapper.findAll(normalizeKeyword(keyword));
+    }
+
+    public PageResult<Product> findPage(String keyword, Integer page, int size) {
+        String normalizedKeyword = normalizeKeyword(keyword);
+        int totalCount = productMapper.countAll(normalizedKeyword);
+        int totalPages = totalCount == 0
+                ? 1
+                : (int) Math.ceil((double) totalCount / size);
+        int currentPage = normalizePage(page, totalPages);
+        int offset = (currentPage - 1) * size;
+
+        return new PageResult<>(
+                productMapper.findPage(normalizedKeyword, size, offset),
+                currentPage,
+                size,
+                totalCount);
     }
 
     public Product findById(Long id) {
@@ -92,6 +109,14 @@ public class ProductService {
         }
 
         return keyword.trim();
+    }
+
+    private int normalizePage(Integer page, int totalPages) {
+        if (page == null || page < 1) {
+            return 1;
+        }
+
+        return Math.min(page, totalPages);
     }
 
     private String normalizeRequired(String value, String label) {

@@ -14,6 +14,13 @@ public interface ProductMapper {
 
     List<Product> findAll(@Param("keyword") String keyword);
 
+    List<Product> findPage(
+            @Param("keyword") String keyword,
+            @Param("limit") int limit,
+            @Param("offset") int offset);
+
+    int countAll(@Param("keyword") String keyword);
+
     Optional<Product> findById(Long id);
 
     Optional<Product> findByCode(String code);

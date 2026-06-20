@@ -1,14 +1,17 @@
 package com.example.inventorymanager.service;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
+import com.example.inventorymanager.dto.PageResult;
 import com.example.inventorymanager.entity.Product;
 import com.example.inventorymanager.mapper.ProductMapper;
 import com.example.inventorymanager.mapper.StockMovementMapper;
@@ -18,6 +21,31 @@ class ProductServiceTest {
     private final ProductMapper productMapper = mock(ProductMapper.class);
     private final StockMovementMapper stockMovementMapper = mock(StockMovementMapper.class);
     private final ProductService productService = new ProductService(productMapper, stockMovementMapper);
+
+    @Test
+    void findPageReturnsPagedProducts() {
+        Product product = new Product();
+        product.setId(6L);
+
+        when(productMapper.countAll("事務")).thenReturn(12);
+        when(productMapper.findPage("事務", 5, 5)).thenReturn(List.of(product));
+
+        PageResult<Product> result = productService.findPage(" 事務 ", 2, 5);
+
+        assertThat(result.getItems()).containsExactly(product);
+        assertThat(result.getPage()).isEqualTo(2);
+        assertThat(result.getTotalPages()).isEqualTo(3);
+        assertThat(result.getTotalCount()).isEqualTo(12);
+    }
+
+    @Test
+    void findPageAdjustsPageWhenRequestedPageIsTooLarge() {
+        when(productMapper.countAll(null)).thenReturn(6);
+
+        productService.findPage(null, 9, 5);
+
+        verify(productMapper).findPage(null, 5, 5);
+    }
 
     @Test
     void registerInsertsProductWhenInputIsValid() {
