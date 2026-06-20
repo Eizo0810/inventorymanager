@@ -2,6 +2,7 @@ package com.example.inventorymanager.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,6 +18,11 @@ public class SecurityConfig {
                 .requestMatchers("/css/**").permitAll()
                 .requestMatchers("/login").permitAll()
                 .requestMatchers("/users/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/products/new").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.GET, "/products/*/edit").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/products").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/products/*").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/products/*/delete").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
