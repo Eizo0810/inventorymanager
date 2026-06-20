@@ -11,6 +11,7 @@
         <h1>商品一覧</h1>
         <div class="nav">
             <a th:href="@{/stocks}" class="btn">在庫一覧</a>
+            <a th:href="@{/users}" class="btn">ユーザー管理</a>
             <a th:href="@{/products/new}" class="btn btn-primary">商品登録</a>
             <form th:action="@{/logout}" method="post">
                 <button type="submit" class="btn">ログアウト</button>
@@ -59,17 +60,13 @@
             <td th:text="${product.safetyStock}"></td>
             <td>
                 <div class="actions">
-                <a th:href="@{/products/{id}/edit(id=${product.id})}" class="btn">
-                    編集
-                </a>
-                <a th:href="@{/products/{id}/movements(id=${product.id})}" class="btn">
-                    入出庫
-                </a>
-                <form th:action="@{/products/{id}/delete(id=${product.id})}"
-                      method="post"
-                      onsubmit="return confirm('この商品を削除しますか？');">
-                    <button type="submit" class="btn">削除</button>
-                </form>
+                    <a th:href="@{/products/{id}/edit(id=${product.id})}" class="btn">編集</a>
+                    <a th:href="@{/products/{id}/movements(id=${product.id})}" class="btn">入出庫</a>
+                    <form th:action="@{/products/{id}/delete(id=${product.id})}"
+                          method="post"
+                          onsubmit="return confirm('この商品を削除しますか？');">
+                        <button type="submit" class="btn">削除</button>
+                    </form>
                 </div>
             </td>
         </tr>
