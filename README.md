@@ -236,6 +236,32 @@ USER: 在庫確認、入出庫登録
 - `/stocks` 在庫一覧画面
 - `/stocks/export` 在庫一覧CSV出力
 
+## スクリーンショット
+
+### ログイン画面
+
+![ログイン画面](docs/screenshots/01-login.png)
+
+### 商品一覧画面
+
+![商品一覧画面](docs/screenshots/02-products.png)
+
+### 在庫一覧画面
+
+![在庫一覧画面](docs/screenshots/03-stocks.png)
+
+### 在庫アラート絞り込み
+
+![在庫アラート絞り込み](docs/screenshots/04-stock-alerts.png)
+
+### 入出庫画面
+
+![入出庫画面](docs/screenshots/05-stock-movements.png)
+
+### ユーザー管理画面
+
+![ユーザー管理画面](docs/screenshots/06-users.png)
+
 ## ER図
 
 ```mermaid
@@ -295,7 +321,3 @@ GROUP BY p.id, p.code, p.name;
 ```
 
 このSQLをMyBatis Mapper XMLに記述し、画面表示用DTOへマッピングしています。
-
-## 今後追加したい機能
-
-- README用スクリーンショット
