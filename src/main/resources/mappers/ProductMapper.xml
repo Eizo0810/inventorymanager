@@ -75,6 +75,11 @@
         WHERE id = #{id}
     </update>
 
+    <delete id="delete">
+        DELETE FROM products
+        WHERE id = #{id}
+    </delete>
+
     <select id="findStockSummaries" resultType="com.example.inventorymanager.dto.StockSummary">
         SELECT
             p.id AS product_id,

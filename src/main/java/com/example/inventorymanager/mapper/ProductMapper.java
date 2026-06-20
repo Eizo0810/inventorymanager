@@ -22,5 +22,7 @@ public interface ProductMapper {
 
     void update(Product product);
 
+    void delete(Long id);
+
     List<StockSummary> findStockSummaries(@Param("keyword") String keyword);
 }

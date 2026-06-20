@@ -8,14 +8,19 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.inventorymanager.dto.StockSummary;
 import com.example.inventorymanager.entity.Product;
 import com.example.inventorymanager.mapper.ProductMapper;
+import com.example.inventorymanager.mapper.StockMovementMapper;
 
 @Service
 public class ProductService {
 
     private final ProductMapper productMapper;
+    private final StockMovementMapper stockMovementMapper;
 
-    public ProductService(ProductMapper productMapper) {
+    public ProductService(
+            ProductMapper productMapper,
+            StockMovementMapper stockMovementMapper) {
         this.productMapper = productMapper;
+        this.stockMovementMapper = stockMovementMapper;
     }
 
     public List<Product> findAll(String keyword) {
@@ -68,6 +73,17 @@ public class ProductService {
                 });
 
         productMapper.update(product);
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        findById(id);
+
+        if (stockMovementMapper.countByProductId(id) > 0) {
+            throw new IllegalArgumentException("入出庫履歴がある商品は削除できません。");
+        }
+
+        productMapper.delete(id);
     }
 
     private String normalizeKeyword(String keyword) {

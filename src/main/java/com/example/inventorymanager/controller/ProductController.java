@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.inventorymanager.entity.Product;
 import com.example.inventorymanager.service.ProductService;
@@ -78,5 +79,19 @@ public class ProductController {
         }
 
         return "redirect:/products?updated";
+    }
+
+    @PostMapping("/products/{id}/delete")
+    public String delete(
+            @PathVariable Long id,
+            RedirectAttributes redirectAttributes) {
+        try {
+            productService.delete(id);
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/products";
+        }
+
+        return "redirect:/products?deleted";
     }
 }

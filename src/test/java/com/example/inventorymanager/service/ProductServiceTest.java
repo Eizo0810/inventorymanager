@@ -11,11 +11,13 @@ import org.junit.jupiter.api.Test;
 
 import com.example.inventorymanager.entity.Product;
 import com.example.inventorymanager.mapper.ProductMapper;
+import com.example.inventorymanager.mapper.StockMovementMapper;
 
 class ProductServiceTest {
 
     private final ProductMapper productMapper = mock(ProductMapper.class);
-    private final ProductService productService = new ProductService(productMapper);
+    private final StockMovementMapper stockMovementMapper = mock(StockMovementMapper.class);
+    private final ProductService productService = new ProductService(productMapper, stockMovementMapper);
 
     @Test
     void registerInsertsProductWhenInputIsValid() {
@@ -98,5 +100,31 @@ class ProductServiceTest {
         assertThatThrownBy(() -> productService.update(1L, product))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("この商品コードはすでに登録されています。");
+    }
+
+    @Test
+    void deleteDeletesProductWhenNoMovementExists() {
+        Product existing = new Product();
+        existing.setId(1L);
+
+        when(productMapper.findById(1L)).thenReturn(Optional.of(existing));
+        when(stockMovementMapper.countByProductId(1L)).thenReturn(0);
+
+        productService.delete(1L);
+
+        verify(productMapper).delete(1L);
+    }
+
+    @Test
+    void deleteThrowsExceptionWhenMovementExists() {
+        Product existing = new Product();
+        existing.setId(1L);
+
+        when(productMapper.findById(1L)).thenReturn(Optional.of(existing));
+        when(stockMovementMapper.countByProductId(1L)).thenReturn(1);
+
+        assertThatThrownBy(() -> productService.delete(1L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("入出庫履歴がある商品は削除できません。");
     }
 }

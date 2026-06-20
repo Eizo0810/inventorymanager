@@ -13,5 +13,7 @@ public interface StockMovementMapper {
 
     List<StockMovement> findByProductId(Long productId);
 
+    int countByProductId(Long productId);
+
     int calculateStockQuantity(Long productId);
 }
