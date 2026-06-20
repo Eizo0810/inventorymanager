@@ -64,6 +64,17 @@
         )
     </insert>
 
+    <update id="update">
+        UPDATE products
+        SET
+            code = #{code},
+            name = #{name},
+            category = #{category},
+            safety_stock = #{safetyStock},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
     <select id="findStockSummaries" resultType="com.example.inventorymanager.dto.StockSummary">
         SELECT
             p.id AS product_id,

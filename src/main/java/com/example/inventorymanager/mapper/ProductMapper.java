@@ -20,5 +20,7 @@ public interface ProductMapper {
 
     void insert(Product product);
 
+    void update(Product product);
+
     List<StockSummary> findStockSummaries(@Param("keyword") String keyword);
 }

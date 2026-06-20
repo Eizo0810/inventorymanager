@@ -21,6 +21,9 @@
     <div th:if="${param.registered}" class="alert alert-success">
         商品を登録しました。
     </div>
+    <div th:if="${param.updated}" class="alert alert-success">
+        商品を更新しました。
+    </div>
 
     <form th:action="@{/products}" method="get" class="form-row">
         <div>
@@ -51,6 +54,9 @@
             <td th:text="${product.category}"></td>
             <td th:text="${product.safetyStock}"></td>
             <td>
+                <a th:href="@{/products/{id}/edit(id=${product.id})}" class="btn">
+                    編集
+                </a>
                 <a th:href="@{/products/{id}/movements(id=${product.id})}" class="btn">
                     入出庫
                 </a>

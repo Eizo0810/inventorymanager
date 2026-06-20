@@ -1,7 +1,6 @@
 package com.example.inventorymanager.service;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -58,5 +57,46 @@ class ProductServiceTest {
         assertThatThrownBy(() -> productService.register(product))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("安全在庫数は0以上で入力してください。");
+    }
+
+    @Test
+    void updateUpdatesProductWhenInputIsValid() {
+        Product existing = new Product();
+        existing.setId(1L);
+        existing.setCode("PRD-100");
+
+        Product product = new Product();
+        product.setCode(" PRD-100 ");
+        product.setName(" 更新商品 ");
+        product.setCategory(" 更新カテゴリ ");
+        product.setSafetyStock(20);
+
+        when(productMapper.findById(1L)).thenReturn(Optional.of(existing));
+        when(productMapper.findByCode("PRD-100")).thenReturn(Optional.of(existing));
+
+        productService.update(1L, product);
+
+        verify(productMapper).update(product);
+    }
+
+    @Test
+    void updateThrowsExceptionWhenCodeIsUsedByOtherProduct() {
+        Product current = new Product();
+        current.setId(1L);
+
+        Product other = new Product();
+        other.setId(2L);
+
+        Product product = new Product();
+        product.setCode("PRD-200");
+        product.setName("更新商品");
+        product.setSafetyStock(20);
+
+        when(productMapper.findById(1L)).thenReturn(Optional.of(current));
+        when(productMapper.findByCode("PRD-200")).thenReturn(Optional.of(other));
+
+        assertThatThrownBy(() -> productService.update(1L, product))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("この商品コードはすでに登録されています。");
     }
 }

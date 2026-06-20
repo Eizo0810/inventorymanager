@@ -48,6 +48,28 @@ public class ProductService {
         productMapper.insert(product);
     }
 
+    @Transactional
+    public void update(Long id, Product product) {
+        findById(id);
+
+        product.setId(id);
+        product.setCode(normalizeRequired(product.getCode(), "商品コード"));
+        product.setName(normalizeRequired(product.getName(), "商品名"));
+        product.setCategory(normalizeOptional(product.getCategory()));
+
+        if (product.getSafetyStock() == null || product.getSafetyStock() < 0) {
+            throw new IllegalArgumentException("安全在庫数は0以上で入力してください。");
+        }
+
+        productMapper.findByCode(product.getCode())
+                .filter(existing -> !existing.getId().equals(id))
+                .ifPresent(existing -> {
+                    throw new IllegalArgumentException("この商品コードはすでに登録されています。");
+                });
+
+        productMapper.update(product);
+    }
+
     private String normalizeKeyword(String keyword) {
         if (keyword == null || keyword.isBlank()) {
             return null;
