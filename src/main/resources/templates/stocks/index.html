@@ -26,6 +26,7 @@
         </div>
         <button type="submit" class="btn btn-primary">検索</button>
         <a th:href="@{/stocks}" class="btn">クリア</a>
+        <a th:href="@{/stocks/export(keyword=${keyword})}" class="btn">CSV出力</a>
     </form>
 
     <table class="table">

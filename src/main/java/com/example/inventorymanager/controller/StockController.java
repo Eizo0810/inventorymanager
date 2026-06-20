@@ -1,5 +1,9 @@
 package com.example.inventorymanager.controller;
 
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.inventorymanager.entity.MovementType;
 import com.example.inventorymanager.entity.Product;
 import com.example.inventorymanager.service.ProductService;
+import com.example.inventorymanager.service.StockCsvService;
 import com.example.inventorymanager.service.StockMovementService;
 
 @Controller
@@ -17,12 +22,15 @@ public class StockController {
 
     private final ProductService productService;
     private final StockMovementService stockMovementService;
+    private final StockCsvService stockCsvService;
 
     public StockController(
             ProductService productService,
-            StockMovementService stockMovementService) {
+            StockMovementService stockMovementService,
+            StockCsvService stockCsvService) {
         this.productService = productService;
         this.stockMovementService = stockMovementService;
+        this.stockCsvService = stockCsvService;
     }
 
     @GetMapping("/stocks")
@@ -34,6 +42,20 @@ public class StockController {
         model.addAttribute("keyword", keyword);
 
         return "stocks/index";
+    }
+
+    @GetMapping("/stocks/export")
+    public ResponseEntity<byte[]> export(@RequestParam(required = false) String keyword) {
+        byte[] csv = stockCsvService.export(productService.findStockSummaries(keyword));
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        ContentDisposition.attachment()
+                                .filename("stock-list.csv")
+                                .build()
+                                .toString())
+                .contentType(new MediaType("text", "csv"))
+                .body(csv);
     }
 
     @GetMapping("/products/{productId}/movements")
