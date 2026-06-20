@@ -70,6 +70,13 @@ a:hover {
     border-radius: 6px;
 }
 
+.checkbox-control {
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+}
+
 .btn {
     display: inline-block;
     padding: 8px 12px;

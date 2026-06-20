@@ -31,5 +31,7 @@ public interface ProductMapper {
 
     void delete(Long id);
 
-    List<StockSummary> findStockSummaries(@Param("keyword") String keyword);
+    List<StockSummary> findStockSummaries(
+            @Param("keyword") String keyword,
+            @Param("alertOnly") boolean alertOnly);
 }

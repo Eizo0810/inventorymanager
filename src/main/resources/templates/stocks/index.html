@@ -25,9 +25,18 @@
                    class="form-control"
                    placeholder="商品コード・商品名・カテゴリ">
         </div>
+        <div class="checkbox-control">
+            <label>
+                <input type="checkbox"
+                       name="alertOnly"
+                       value="true"
+                       th:checked="${alertOnly}">
+                在庫アラートのみ
+            </label>
+        </div>
         <button type="submit" class="btn btn-primary">検索</button>
         <a th:href="@{/stocks}" class="btn">クリア</a>
-        <a th:href="@{/stocks/export(keyword=${keyword})}" class="btn">CSV出力</a>
+        <a th:href="@{/stocks/export(keyword=${keyword}, alertOnly=${alertOnly})}" class="btn">CSV出力</a>
     </form>
 
     <table class="table">

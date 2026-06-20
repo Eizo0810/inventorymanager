@@ -49,8 +49,8 @@ public class ProductService {
                 .orElseThrow(() -> new IllegalArgumentException("商品が見つかりません。"));
     }
 
-    public List<StockSummary> findStockSummaries(String keyword) {
-        return productMapper.findStockSummaries(normalizeKeyword(keyword));
+    public List<StockSummary> findStockSummaries(String keyword, boolean alertOnly) {
+        return productMapper.findStockSummaries(normalizeKeyword(keyword), alertOnly);
     }
 
     @Transactional

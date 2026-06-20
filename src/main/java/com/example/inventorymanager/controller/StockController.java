@@ -36,17 +36,21 @@ public class StockController {
     @GetMapping("/stocks")
     public String index(
             @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "false") boolean alertOnly,
             Model model) {
 
-        model.addAttribute("summaries", productService.findStockSummaries(keyword));
+        model.addAttribute("summaries", productService.findStockSummaries(keyword, alertOnly));
         model.addAttribute("keyword", keyword);
+        model.addAttribute("alertOnly", alertOnly);
 
         return "stocks/index";
     }
 
     @GetMapping("/stocks/export")
-    public ResponseEntity<byte[]> export(@RequestParam(required = false) String keyword) {
-        byte[] csv = stockCsvService.export(productService.findStockSummaries(keyword));
+    public ResponseEntity<byte[]> export(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "false") boolean alertOnly) {
+        byte[] csv = stockCsvService.export(productService.findStockSummaries(keyword, alertOnly));
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION,

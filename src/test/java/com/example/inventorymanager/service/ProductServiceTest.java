@@ -48,6 +48,13 @@ class ProductServiceTest {
     }
 
     @Test
+    void findStockSummariesPassesNormalizedKeywordAndAlertOnlyToMapper() {
+        productService.findStockSummaries(" 事務 ", true);
+
+        verify(productMapper).findStockSummaries("事務", true);
+    }
+
+    @Test
     void registerInsertsProductWhenInputIsValid() {
         Product product = new Product();
         product.setCode(" PRD-100 ");

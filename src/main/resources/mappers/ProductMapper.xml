@@ -144,6 +144,15 @@
             p.name,
             p.category,
             p.safety_stock
+        <if test="alertOnly">
+            HAVING COALESCE(SUM(
+                CASE
+                    WHEN sm.movement_type = 'IN' THEN sm.quantity
+                    WHEN sm.movement_type = 'OUT' THEN -sm.quantity
+                    ELSE 0
+                END
+            ), 0) &lt;= p.safety_stock
+        </if>
         ORDER BY p.id
     </select>
 </mapper>
