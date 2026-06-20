@@ -40,3 +40,11 @@ WHERE code = 'PRD-003'
       SELECT 1 FROM stock_movements sm
       WHERE sm.product_id = products.id AND sm.note = 'サンプル出庫'
   );
+INSERT INTO app_users (username, password, role, enabled)
+VALUES (
+    'admin',
+    '$2a$10$TlvgzQFP3Y6NGea48CmuSOth0lOaiU6lh2LADpuRGGQV6YG1Ka0Ea',
+    'ADMIN',
+    TRUE
+)
+ON CONFLICT (username) DO NOTHING;
