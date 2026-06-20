@@ -15,6 +15,17 @@
         ORDER BY id
     </select>
 
+    <select id="findById" resultType="com.example.inventorymanager.entity.AppUser">
+        SELECT
+            id,
+            username,
+            password,
+            role,
+            enabled
+        FROM app_users
+        WHERE id = #{id}
+    </select>
+
     <select id="findByUsername" resultType="com.example.inventorymanager.entity.AppUser">
         SELECT
             id,
@@ -39,4 +50,22 @@
             #{enabled}
         )
     </insert>
+
+    <update id="update">
+        UPDATE app_users
+        SET
+            username = #{username},
+            password = #{password},
+            role = #{role},
+            enabled = #{enabled},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = #{id}
+    </update>
+
+    <select id="countEnabledAdmins" resultType="int">
+        SELECT COUNT(*)
+        FROM app_users
+        WHERE role = 'ADMIN'
+          AND enabled = TRUE
+    </select>
 </mapper>

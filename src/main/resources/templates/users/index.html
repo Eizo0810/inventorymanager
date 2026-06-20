@@ -18,6 +18,9 @@
     <div th:if="${param.registered}" class="alert alert-success">
         ユーザーを登録しました。
     </div>
+    <div th:if="${param.updated}" class="alert alert-success">
+        ユーザーを更新しました。
+    </div>
 
     <table class="table">
         <tr>
@@ -25,6 +28,7 @@
             <th>ユーザー名</th>
             <th>権限</th>
             <th>状態</th>
+            <th>操作</th>
         </tr>
         <tr th:each="user : ${users}">
             <td th:text="${user.id}"></td>
@@ -33,6 +37,9 @@
             <td>
                 <span th:if="${user.enabled}" class="badge badge-ok">有効</span>
                 <span th:unless="${user.enabled}" class="badge badge-alert">無効</span>
+            </td>
+            <td>
+                <a th:href="@{/users/{id}/edit(id=${user.id})}" class="btn">編集</a>
             </td>
         </tr>
     </table>

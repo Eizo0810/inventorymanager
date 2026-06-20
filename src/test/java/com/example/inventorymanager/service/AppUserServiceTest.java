@@ -90,4 +90,103 @@ class AppUserServiceTest {
 
         verify(appUserMapper, never()).insert(any());
     }
+
+    @Test
+    void updateUpdatesUserWithoutChangingPasswordWhenPasswordIsBlank() {
+        AppUser current = appUser(2L, "operator", "old-password", "USER", true);
+
+        UserForm form = new UserForm();
+        form.setUsername(" operator2 ");
+        form.setPassword(" ");
+        form.setRole("user");
+        form.setEnabled(false);
+
+        when(appUserMapper.findById(2L)).thenReturn(Optional.of(current));
+        when(appUserMapper.findByUsername("operator2")).thenReturn(Optional.empty());
+
+        appUserService.update(2L, form);
+
+        ArgumentCaptor<AppUser> captor = ArgumentCaptor.forClass(AppUser.class);
+        verify(appUserMapper).update(captor.capture());
+
+        AppUser updated = captor.getValue();
+        assertThat(updated.getUsername()).isEqualTo("operator2");
+        assertThat(updated.getPassword()).isEqualTo("old-password");
+        assertThat(updated.getRole()).isEqualTo("USER");
+        assertThat(updated.isEnabled()).isFalse();
+    }
+
+    @Test
+    void updateChangesPasswordWhenPasswordIsEntered() {
+        AppUser current = appUser(2L, "operator", "old-password", "USER", true);
+
+        UserForm form = new UserForm();
+        form.setUsername("operator");
+        form.setPassword("newpass");
+        form.setRole("USER");
+        form.setEnabled(true);
+
+        when(appUserMapper.findById(2L)).thenReturn(Optional.of(current));
+        when(appUserMapper.findByUsername("operator")).thenReturn(Optional.of(current));
+        when(passwordEncoder.encode("newpass")).thenReturn("new-encoded-password");
+
+        appUserService.update(2L, form);
+
+        ArgumentCaptor<AppUser> captor = ArgumentCaptor.forClass(AppUser.class);
+        verify(appUserMapper).update(captor.capture());
+
+        assertThat(captor.getValue().getPassword()).isEqualTo("new-encoded-password");
+    }
+
+    @Test
+    void updateThrowsExceptionWhenUsernameIsUsedByOtherUser() {
+        AppUser current = appUser(2L, "operator", "password", "USER", true);
+        AppUser other = appUser(3L, "other", "password", "USER", true);
+
+        UserForm form = new UserForm();
+        form.setUsername("other");
+        form.setPassword("");
+        form.setRole("USER");
+        form.setEnabled(true);
+
+        when(appUserMapper.findById(2L)).thenReturn(Optional.of(current));
+        when(appUserMapper.findByUsername("other")).thenReturn(Optional.of(other));
+
+        assertThatThrownBy(() -> appUserService.update(2L, form))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("このユーザー名はすでに登録されています。");
+
+        verify(appUserMapper, never()).update(any());
+    }
+
+    @Test
+    void updateThrowsExceptionWhenLastEnabledAdminWouldBeDisabled() {
+        AppUser current = appUser(1L, "admin", "password", "ADMIN", true);
+
+        UserForm form = new UserForm();
+        form.setUsername("admin");
+        form.setPassword("");
+        form.setRole("ADMIN");
+        form.setEnabled(false);
+
+        when(appUserMapper.findById(1L)).thenReturn(Optional.of(current));
+        when(appUserMapper.findByUsername("admin")).thenReturn(Optional.of(current));
+        when(appUserMapper.countEnabledAdmins()).thenReturn(1);
+
+        assertThatThrownBy(() -> appUserService.update(1L, form))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("最後の有効なADMINユーザーは無効化またはUSERへ変更できません。");
+
+        verify(appUserMapper, never()).update(any());
+    }
+
+    private AppUser appUser(Long id, String username, String password, String role, boolean enabled) {
+        AppUser appUser = new AppUser();
+        appUser.setId(id);
+        appUser.setUsername(username);
+        appUser.setPassword(password);
+        appUser.setRole(role);
+        appUser.setEnabled(enabled);
+        return appUser;
+    }
 }

@@ -3,6 +3,7 @@ package com.example.inventorymanager.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.example.inventorymanager.dto.UserForm;
@@ -42,5 +43,30 @@ public class UserController {
         }
 
         return "redirect:/users?registered";
+    }
+
+    @GetMapping("/users/{id}/edit")
+    public String editForm(@PathVariable Long id, Model model) {
+        model.addAttribute("userId", id);
+        model.addAttribute("userForm", appUserService.toForm(appUserService.findById(id)));
+
+        return "users/edit";
+    }
+
+    @PostMapping("/users/{id}")
+    public String update(
+            @PathVariable Long id,
+            UserForm userForm,
+            Model model) {
+        try {
+            appUserService.update(id, userForm);
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("userId", id);
+            model.addAttribute("userForm", userForm);
+            model.addAttribute("error", e.getMessage());
+            return "users/edit";
+        }
+
+        return "redirect:/users?updated";
     }
 }
