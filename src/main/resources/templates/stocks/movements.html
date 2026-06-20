@@ -27,6 +27,8 @@
     <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
     <form th:action="@{/products/{id}/movements(id=${product.id})}" method="post" class="form-row">
+        <input type="hidden" name="searchMovementType" th:value="${selectedMovementType}">
+        <input type="hidden" name="keyword" th:value="${keyword}">
         <div>
             <label class="form-label">種別</label>
             <select name="movementType" class="form-control">
@@ -44,6 +46,29 @@
             <input type="text" name="note" class="form-control">
         </div>
         <button type="submit" class="btn btn-primary">登録</button>
+    </form>
+
+    <form th:action="@{/products/{id}/movements(id=${product.id})}" method="get" class="form-row">
+        <div>
+            <label class="form-label">種別</label>
+            <select name="movementType" class="form-control">
+                <option value="">すべて</option>
+                <option th:each="type : ${movementTypes}"
+                        th:value="${type}"
+                        th:selected="${type == selectedMovementType}"
+                        th:text="${type == T(com.example.inventorymanager.entity.MovementType).IN ? '入庫' : '出庫'}"></option>
+            </select>
+        </div>
+        <div>
+            <label class="form-label">備考キーワード</label>
+            <input type="text"
+                   name="keyword"
+                   th:value="${keyword}"
+                   class="form-control"
+                   placeholder="備考で検索">
+        </div>
+        <button type="submit" class="btn btn-primary">検索</button>
+        <a th:href="@{/products/{id}/movements(id=${product.id})}" class="btn">クリア</a>
     </form>
 
     <table class="table">

@@ -31,6 +31,27 @@
         ORDER BY created_at DESC, id DESC
     </select>
 
+    <select id="searchByProductId" resultType="com.example.inventorymanager.entity.StockMovement">
+        SELECT
+            id,
+            product_id,
+            movement_type,
+            quantity,
+            note,
+            created_at
+        FROM stock_movements
+        <where>
+            product_id = #{productId}
+            <if test="movementType != null">
+                AND movement_type = #{movementType}
+            </if>
+            <if test="keyword != null">
+                AND note ILIKE CONCAT('%', #{keyword}, '%')
+            </if>
+        </where>
+        ORDER BY created_at DESC, id DESC
+    </select>
+
     <select id="countByProductId" resultType="int">
         SELECT COUNT(*)
         FROM stock_movements

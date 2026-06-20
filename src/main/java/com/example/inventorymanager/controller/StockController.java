@@ -59,12 +59,19 @@ public class StockController {
     }
 
     @GetMapping("/products/{productId}/movements")
-    public String movements(@PathVariable Long productId, Model model) {
+    public String movements(
+            @PathVariable Long productId,
+            @RequestParam(required = false) MovementType movementType,
+            @RequestParam(required = false) String keyword,
+            Model model) {
         Product product = productService.findById(productId);
 
         model.addAttribute("product", product);
-        model.addAttribute("movements", stockMovementService.findByProductId(productId));
+        model.addAttribute("movements",
+                stockMovementService.searchByProductId(productId, movementType, keyword));
         model.addAttribute("movementTypes", MovementType.values());
+        model.addAttribute("selectedMovementType", movementType);
+        model.addAttribute("keyword", keyword);
 
         return "stocks/movements";
     }
@@ -75,6 +82,8 @@ public class StockController {
             @RequestParam MovementType movementType,
             @RequestParam Integer quantity,
             @RequestParam(required = false) String note,
+            @RequestParam(required = false) MovementType searchMovementType,
+            @RequestParam(required = false) String keyword,
             Model model) {
 
         try {
@@ -82,8 +91,11 @@ public class StockController {
         } catch (IllegalArgumentException e) {
             Product product = productService.findById(productId);
             model.addAttribute("product", product);
-            model.addAttribute("movements", stockMovementService.findByProductId(productId));
+            model.addAttribute("movements",
+                    stockMovementService.searchByProductId(productId, searchMovementType, keyword));
             model.addAttribute("movementTypes", MovementType.values());
+            model.addAttribute("selectedMovementType", searchMovementType);
+            model.addAttribute("keyword", keyword);
             model.addAttribute("error", e.getMessage());
             return "stocks/movements";
         }

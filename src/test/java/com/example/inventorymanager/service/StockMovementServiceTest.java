@@ -1,6 +1,8 @@
 package com.example.inventorymanager.service;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -47,5 +49,23 @@ class StockMovementServiceTest {
                 1L, MovementType.OUT, 6, "出庫"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("出庫数が現在庫数を超えています。");
+    }
+
+    @Test
+    void searchByProductIdPassesNormalizedKeywordToMapper() {
+        when(productService.findById(1L)).thenReturn(new Product());
+
+        stockMovementService.searchByProductId(1L, MovementType.IN, " 仕入 ");
+
+        verify(stockMovementMapper).searchByProductId(1L, MovementType.IN, "仕入");
+    }
+
+    @Test
+    void searchByProductIdConvertsBlankKeywordToNull() {
+        when(productService.findById(1L)).thenReturn(new Product());
+
+        stockMovementService.searchByProductId(1L, null, " ");
+
+        verify(stockMovementMapper).searchByProductId(eq(1L), isNull(), isNull());
     }
 }

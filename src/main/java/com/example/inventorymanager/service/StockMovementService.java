@@ -26,6 +26,17 @@ public class StockMovementService {
         return stockMovementMapper.findByProductId(productId);
     }
 
+    public List<StockMovement> searchByProductId(
+            Long productId,
+            MovementType movementType,
+            String keyword) {
+        productService.findById(productId);
+        return stockMovementMapper.searchByProductId(
+                productId,
+                movementType,
+                normalizeKeyword(keyword));
+    }
+
     @Transactional
     public void register(Long productId, MovementType movementType, Integer quantity, String note) {
         productService.findById(productId);
@@ -51,5 +62,13 @@ public class StockMovementService {
         if (quantity == null || quantity <= 0) {
             throw new IllegalArgumentException("数量は1以上で入力してください。");
         }
+    }
+
+    private String normalizeKeyword(String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            return null;
+        }
+
+        return keyword.trim();
     }
 }
